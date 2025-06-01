@@ -1,29 +1,17 @@
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const userRoutes = require('./backend/routes/userRoutes'); // correto com base no seu path
 
-const clientRoutes = require('./routes/clients');
-const messageRoutes = require('./routes/messages');
+dotenv.config();
+connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middlewares
-app.use(cors());
 app.use(express.json());
 
 // Rotas
-app.use('/api/clients', clientRoutes);
-app.use('/api/messages', messageRoutes);
+app.get('/', (req, res) => res.send('Zynapse API rodando'));
+app.use('/api/users', userRoutes);
 
-// Conexão com MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('✅ MongoDB conectado com sucesso.');
-  app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
-}).catch(err => {
-  console.error('Erro ao conectar ao MongoDB:', err);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
