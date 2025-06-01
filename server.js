@@ -1,25 +1,29 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
 require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
-const userRoutes = require('./routes/userRoutes');
+const clientRoutes = require('./routes/clients');
+const messageRoutes = require('./routes/messages');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/users', userRoutes);
+// Rotas
+app.use('/api/clients', clientRoutes);
+app.use('/api/messages', messageRoutes);
 
-// Conectar ao MongoDB
+// Conexão com MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-})
-.then(() => {
-  console.log('🟢 MongoDB conectado com sucesso!');
-  app.listen(process.env.PORT, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${process.env.PORT}`);
-  });
-})
-.catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
+}).then(() => {
+  console.log('✅ MongoDB conectado com sucesso.');
+  app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+}).catch(err => {
+  console.error('Erro ao conectar ao MongoDB:', err);
+});
